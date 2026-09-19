@@ -1,5 +1,15 @@
-// Global Configuration for Distributed Cloud Architecture
-const BACKEND_URL = "https://onrender.com";
+// Dynamic Backend URL resolver:
+// - Direct Render/Localhost: uses relative path "" to call backend on the same origin.
+// - Separate Vercel frontend: uses configured window.API_BACKEND_URL or localStorage, or defaults to current origin.
+const BACKEND_URL = (() => {
+  if (typeof window !== 'undefined') {
+    if (window.API_BACKEND_URL) return window.API_BACKEND_URL;
+    const stored = localStorage.getItem('BACKEND_URL');
+    if (stored) return stored;
+    return "";
+  }
+  return "";
+})();
 
 const API = {
   getMovies: async () => {

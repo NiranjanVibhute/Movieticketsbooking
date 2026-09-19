@@ -17,9 +17,9 @@ public class MovieController {
     private final BookingEngine engine = BookingEngine.getInstance();
 
     public void handle(HttpExchange exchange) throws IOException {
-        // Set CORS headers
+        // Set CORS headers dynamically to unblock cross-origin web browser traffic
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
-        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
         exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
         if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
@@ -66,7 +66,8 @@ public class MovieController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            sendJsonResponse(exchange, 500, "{\"error\":\"Internal Server Error: " + escapeJson(e.getMessage()) + "\"}");
+            sendJsonResponse(exchange, 500,
+                    "{\"error\":\"Internal Server Error: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
@@ -78,8 +79,8 @@ public class MovieController {
         List<Map<String, Object>> movies = new ArrayList<>();
         String sql = "SELECT * FROM movies ORDER BY is_blind_box DESC, score DESC";
         try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Map<String, Object> m = new HashMap<>();
                 m.put("id", rs.getString("id"));
@@ -105,7 +106,7 @@ public class MovieController {
     private void handleGetMovieById(HttpExchange exchange, String movieId) throws Exception {
         String sql = "SELECT * FROM movies WHERE id = ?";
         try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, movieId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
