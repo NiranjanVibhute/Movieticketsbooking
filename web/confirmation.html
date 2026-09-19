@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Confirmation & Barcode // DARK-OPS CINEMA</title>
+  <meta name="description" content="Holographic Movie Ticket Pass with dynamic barcode mockup, revealed mystery movie title, and real-time seat food delivery tracker.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .navbar, .btn, .delivery-tracker-card, .toast-container { display: none !important; }
+      .cyber-ticket { border: 2px solid #000 !important; box-shadow: none !important; color: #000 !important; }
+      .ticket-header { background: #eee !important; color: #000 !important; }
+      .ticket-barcode-wrap { border: 1px solid #000; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">⚡</div>
+        <span class="brand-title">DARK-OPS CINEMA</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">🎬 Movies</a></li>
+        <li><a href="booking.html" class="nav-link">💺 Seating POV</a></li>
+        <li><a href="snacks.html" class="nav-link">🍿 Snack Lab</a></li>
+        <li><a href="confirmation.html" class="nav-link active">🎟️ Ticket Pass</a></li>
+      </ul>
+
+      <div class="nav-status-pill">
+        <span class="status-dot"></span>
+        <span>TICKET CONFIRMED</span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- SUCCESS HERO HEADER -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div style="font-size: 3.5rem; margin-bottom: 0.5rem; animation: pulse-glow 2s infinite;">🎟️</div>
+      <h1 style="font-size: 2.6rem;">Cinema Pass Confirmed</h1>
+      <p style="color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0.5rem auto 0 auto;">
+        Your digital admission pass is encrypted and synced to the auditorium access gates. Present this barcode upon entry.
+      </p>
+    </div>
+
+    <!-- TICKET PASS CARD -->
+    <div class="ticket-wrapper">
+      <div class="cyber-ticket" id="cyber-ticket-element">
+        
+        <!-- TICKET HEADER -->
+        <div class="ticket-header">
+          <div>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700; letter-spacing: 0.15em;">
+              ADMISSION PASS // DARK-OPS AUDIOVISUAL
+            </span>
+            <h2 id="tix-movie-title" style="font-size: 1.6rem; margin-top: 0.2rem;">Dune: Part Two</h2>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Reference Code:</span>
+            <div id="tix-booking-ref" style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: #fff;">
+              TIX-4821-CYBER
+            </div>
+          </div>
+        </div>
+
+        <!-- SPECIAL BLIND BOX REVEAL BANNER (IF APPLICABLE) -->
+        <div id="blind-box-reveal-banner" style="display: none; background: linear-gradient(90deg, #ec4899, #8b5cf6); padding: 1rem 2rem; color: #fff; border-bottom: 1px dashed rgba(255,255,255,0.3);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <span style="font-size: 0.75rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; background: #000; color: #fff; padding: 2px 8px; border-radius: 4px;">
+                🎁 MYSTERY BLIND BOX REVEALED
+              </span>
+              <h3 id="blind-box-unmasked-title" style="font-size: 1.35rem; margin-top: 0.35rem;">
+                Oppenheimer: Director's 70mm Secret Cut
+              </h3>
+            </div>
+            <span style="font-size: 2rem;">🔓</span>
+          </div>
+        </div>
+
+        <!-- TICKET BODY -->
+        <div class="ticket-body">
+          
+          <!-- POSTER THUMBNAIL -->
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <img id="tix-poster-img" src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&auto=format&fit=crop&q=80" alt="Movie Poster" style="width: 100%; height: 260px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            
+            <div class="ticket-barcode-wrap" style="width: 100%; margin-top: 1rem;">
+              <div id="barcode-container">
+                <!-- SVG Barcode injected dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- DETAILS GRID -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+              <div>
+                <span class="price-label">Assigned Seats</span>
+                <div id="tix-seat-numbers" style="font-size: 1.35rem; font-weight: 800; color: var(--accent-cyan); font-family: var(--font-mono);">
+                  D4, D5
+                </div>
+              </div>
+
+              <div>
+                <span class="price-label">Auditorium / Screen</span>
+                <div style="font-size: 1.2rem; font-weight: 700; color: #fff;">
+                  Hall 1 (IMAX Laser)
+                </div>
+              </div>
+
+              <div>
+                <span class="price-label">Showtime</span>
+                <div id="tix-showtime" style="font-size: 1.2rem; font-weight: 700; color: #fff; font-family: var(--font-mono);">
+                  18:30 (Evening)
+                </div>
+              </div>
+
+              <div>
+                <span class="price-label">Audience Vibe Zone</span>
+                <div id="tix-vibe-badge">
+                  <span class="seat-tag-pill" style="border-color: var(--vibe-quiet); color: var(--vibe-quiet);">🤫 QUIET FOCUS</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="price-label">Ticket Holder</span>
+                <div id="tix-customer-name" style="font-size: 1rem; font-weight: 600; color: var(--text-main);">
+                  Niranjan V.
+                </div>
+              </div>
+
+              <div>
+                <span class="price-label">Total Payment</span>
+                <div id="tix-total-amount" style="font-size: 1.35rem; font-weight: 800; color: var(--accent-emerald); font-family: var(--font-mono);">
+                  $35.00
+                </div>
+              </div>
+            </div>
+
+            <!-- ORDERED SNACKS SUMMARY -->
+            <div style="margin-top: 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+              <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">
+                🍿 In-Seat Gourmet Snack Package:
+              </div>
+              <div id="tix-snacks-list" style="font-size: 0.85rem; color: var(--text-muted);">
+                1x Cyber Truffle Popcorn (+ Extra Queso Drizzle, Mega-Size)
+              </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="window.print()">
+                🖨️ Print Ticket Pass
+              </button>
+              <button class="btn btn-outline" onclick="downloadTicketJSON()">
+                💾 Save Digital Pass (.JSON)
+              </button>
+              <a href="index.html" class="btn btn-outline">
+                🎬 Book Another Movie
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- REAL-TIME IN-SEAT FOOD DELIVERY TRACKER -->
+      <div class="delivery-tracker-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <h3 style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>🚀</span> Live Theater In-Seat Food Delivery Timeline
+            </h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+              Track kitchen preparation and delivery progress directly to your row and seat number.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="filter-btn" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" onclick="advanceDeliveryStage()">
+              ⚡ Simulate Next Delivery Step
+            </button>
+          </div>
+        </div>
+
+        <div class="tracker-stepper">
+          <!-- Step 1 -->
+          <div class="tracker-step completed" id="step-1">
+            <div class="step-circle">✓</div>
+            <div class="step-label">Order Placed</div>
+            <div class="step-time">Instant</div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="tracker-step active" id="step-2">
+            <div class="step-circle">🍳</div>
+            <div class="step-label">Kitchen Preparing</div>
+            <div class="step-time" id="step-2-time">Now Brewing</div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="tracker-step" id="step-3">
+            <div class="step-circle">🏃</div>
+            <div class="step-label">In Transit to Seat</div>
+            <div class="step-time" id="step-3-time">Auditorium Hall 1</div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="tracker-step" id="step-4">
+            <div class="step-circle">🍿</div>
+            <div class="step-label">Delivered to Guest</div>
+            <div class="step-time" id="step-4-time">Enjoy the Movie!</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; background: rgba(0,240,255,0.05); border: 1px solid rgba(0,240,255,0.15); border-radius: var(--radius-sm); padding: 0.75rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem;">
+          <span id="delivery-status-msg" style="color: var(--accent-cyan);">
+            👨‍🍳 <strong>Kitchen Status:</strong> Chef is currently roasting your truffle popcorn & tossing melted cheese glaze.
+          </span>
+          <span style="font-family: var(--font-mono); color: var(--text-muted);">ETA: ~8 mins</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    let currentBookingData = null;
+    let deliveryStage = 2; // 1 = Placed, 2 = Preparing, 3 = In Transit, 4 = Delivered
+
+    async function initConfirmation() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+
+      if (ref) {
+        try {
+          currentBookingData = await API.getBooking(ref);
+        } catch(e) {
+          console.error("Failed to fetch booking from DB:", e);
+        }
+      }
+
+      if (!currentBookingData) {
+        currentBookingData = CinemaStore.getLastBooking();
+      }
+
+      if (!currentBookingData) {
+        // Fallback default mockup
+        currentBookingData = {
+          bookingRef: 'TIX-7734-CYBER',
+          movieTitle: 'Dune: Part Two (IMAX 70mm)',
+          isBlindBox: false,
+          showTime: '18:30',
+          seatNumbers: 'D4, D5',
+          vibePreference: 'QUIET',
+          totalAmount: 37.00,
+          customerName: 'Niranjan V.',
+          barcodeData: 'DARK-TIX-7734-SEC99'
+        };
+      }
+
+      renderTicket(currentBookingData);
+    }
+
+    function renderTicket(b) {
+      document.getElementById('tix-booking-ref').textContent = b.bookingRef || 'TIX-9921-CYBER';
+      document.getElementById('tix-movie-title').textContent = b.movieTitle;
+      document.getElementById('tix-showtime').textContent = b.showTime || '18:30';
+      document.getElementById('tix-seatNumbers' in b ? 'tix-seatNumbers' : 'tix-seat-numbers').textContent = b.seatNumbers || 'D4, D5';
+      document.getElementById('tix-total-amount').textContent = `$${b.totalAmount.toFixed(2)}`;
+      document.getElementById('tix-customer-name').textContent = b.customerName || 'Valued Guest';
+
+      // Barcode
+      const barcodeCode = b.barcodeData || `DARK-${b.bookingRef}-SEC99`;
+      document.getElementById('barcode-container').innerHTML = generateBarcodeSVG(barcodeCode);
+
+      // Mystery Blind box handling
+      if (b.isBlindBox) {
+        const banner = document.getElementById('blind-box-reveal-banner');
+        banner.style.display = 'block';
+        document.getElementById('blind-box-unmasked-title').textContent = b.revealedMovieTitle || "Oppenheimer: Director's 70mm Secret Cut";
+        showToast("🎁 Mystery Movie identity revealed on your pass!", "success");
+      }
+
+      // Vibe tag badge
+      const vibeEl = document.getElementById('tix-vibe-badge');
+      const vibe = b.vibePreference || 'QUIET';
+      if (vibe === 'EXCITED_FAN') {
+        vibeEl.innerHTML = `<span class="seat-tag-pill" style="border-color: var(--vibe-fan); color: var(--vibe-fan);">🔥 EXCITED FAN ZONE</span>`;
+      } else if (vibe === 'FAMILY') {
+        vibeEl.innerHTML = `<span class="seat-tag-pill" style="border-color: var(--vibe-family); color: var(--vibe-family);">🍿 FAMILY & SOCIAL</span>`;
+      } else {
+        vibeEl.innerHTML = `<span class="seat-tag-pill" style="border-color: var(--vibe-quiet); color: var(--vibe-quiet);">🤫 QUIET FOCUS</span>`;
+      }
+
+      // Snacks summary
+      const snackOrder = CinemaStore.getSnackOrder();
+      if (snackOrder && snackOrder.length > 0) {
+        document.getElementById('tix-snacks-list').innerHTML = snackOrder.map(s => `• 1x ${s.description} ($${s.price.toFixed(2)})`).join('<br>');
+      } else if (b.snacksJson && b.snacksJson !== '[]') {
+        try {
+          const parsed = JSON.parse(b.snacksJson);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            document.getElementById('tix-snacks-list').innerHTML = parsed.map(s => `• 1x ${s.description || s.base || 'Snack'} ($${(s.price || 0).toFixed(2)})`).join('<br>');
+          }
+        } catch(e) {}
+      }
+    }
+
+    function advanceDeliveryStage() {
+      deliveryStage = (deliveryStage % 4) + 1;
+      updateDeliveryStepper();
+    }
+
+    function updateDeliveryStepper() {
+      const s1 = document.getElementById('step-1');
+      const s2 = document.getElementById('step-2');
+      const s3 = document.getElementById('step-3');
+      const s4 = document.getElementById('step-4');
+      const msg = document.getElementById('delivery-status-msg');
+
+      s1.className = 'tracker-step completed';
+      s2.className = 'tracker-step';
+      s3.className = 'tracker-step';
+      s4.className = 'tracker-step';
+
+      if (deliveryStage === 1) {
+        s1.className = 'tracker-step active';
+        msg.innerHTML = `📋 <strong>Order Queued:</strong> Ticket and snack request verified in DarkOps database.`;
+      } else if (deliveryStage === 2) {
+        s1.className = 'tracker-step completed';
+        s2.className = 'tracker-step active';
+        msg.innerHTML = `👨‍🍳 <strong>Kitchen Status:</strong> Chef is tossing fresh truffle glaze and heating artisan nachos.`;
+      } else if (deliveryStage === 3) {
+        s1.className = 'tracker-step completed';
+        s2.className = 'tracker-step completed';
+        s3.className = 'tracker-step active';
+        msg.innerHTML = `🏃 <strong>Courier in Transit:</strong> Staff member is walking down the aisle toward your seat.`;
+        showToast("Snack delivery courier entered Auditorium Hall 1!", "info");
+      } else if (deliveryStage === 4) {
+        s1.className = 'tracker-step completed';
+        s2.className = 'tracker-step completed';
+        s3.className = 'tracker-step completed';
+        s4.className = 'tracker-step completed';
+        msg.innerHTML = `🎉 <strong>Delivered:</strong> Snacks handed over at your row! Enjoy the show!`;
+        showToast("Food delivered to your seat. Enjoy!", "success");
+      }
+    }
+
+    function downloadTicketJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentBookingData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `ticket_${currentBookingData.bookingRef || 'darkops'}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("e-Ticket JSON pass downloaded successfully!", "success");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initConfirmation();
+      updateDeliveryStepper();
+    });
+  </script>
+</body>
+</html>

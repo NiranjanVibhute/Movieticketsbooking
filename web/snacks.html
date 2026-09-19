@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Snack Lab // DARK-OPS CINEMA</title>
+  <meta name="description" content="Dynamic Snack Customizer using Java Decorator Pattern for real-time calorie and price calculations with in-seat theater delivery.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">⚡</div>
+        <span class="brand-title">DARK-OPS CINEMA</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">🎬 Movies</a></li>
+        <li><a href="booking.html" class="nav-link">💺 Seating POV</a></li>
+        <li><a href="snacks.html" class="nav-link active">🍿 Snack Lab</a></li>
+        <li><a href="confirmation.html" class="nav-link">🎟️ Ticket Pass</a></li>
+      </ul>
+
+      <div class="nav-status-pill">
+        <span class="status-dot"></span>
+        <span>JAVA DECORATOR ENGINE</span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- HEADER -->
+    <div style="margin-bottom: 2rem;">
+      <a href="booking.html" style="color: var(--accent-cyan); font-size: 0.85rem; font-family: var(--font-mono);">← BACK TO SEATING</a>
+      <h1 style="font-size: 2.3rem; margin-top: 0.25rem;">Cyber Snack Customizer & Lab</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Craft your gourmet theater snacks. Dynamic calories and pricing computed fluidly in real-time by the Java Decorator Pattern.
+      </p>
+    </div>
+
+    <!-- TWO COLUMN LAYOUT: CUSTOMIZER + CART SUMMARY -->
+    <div class="booking-layout">
+
+      <!-- LEFT COLUMN: INTERACTIVE SNACK BUILDER -->
+      <div>
+
+        <!-- STEP 1: SELECT BASE SNACK -->
+        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>1️⃣</span> Select Base Gourmet Snack
+        </h3>
+
+        <div class="snack-grid" id="base-snacks-grid">
+          <!-- Popcorn -->
+          <div class="snack-card active-base" id="card-POPCORN" onclick="selectBase('POPCORN')">
+            <img src="https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400&auto=format&fit=crop&q=80" alt="Popcorn" class="snack-img">
+            <div class="snack-body">
+              <h4 style="font-size: 1.15rem;">Cyber Truffle Popcorn</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Warm butterfly popcorn with Himalayan salt.</p>
+              <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.85rem;">
+                <span style="color: var(--accent-cyan); font-weight: 700;">$7.50</span>
+                <span style="color: var(--text-muted);">420 kcal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nachos -->
+          <div class="snack-card" id="card-NACHOS" onclick="selectBase('NACHOS')">
+            <img src="https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400&auto=format&fit=crop&q=80" alt="Nachos" class="snack-img">
+            <div class="snack-body">
+              <h4 style="font-size: 1.15rem;">Volcanic Loaded Nachos</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Artisanal corn chips & warm queso blanco.</p>
+              <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.85rem;">
+                <span style="color: var(--accent-cyan); font-weight: 700;">$9.00</span>
+                <span style="color: var(--text-muted);">680 kcal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drinks -->
+          <div class="snack-card" id="card-DRINKS" onclick="selectBase('DRINKS')">
+            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80" alt="Slush Drink" class="snack-img">
+            <div class="snack-body">
+              <h4 style="font-size: 1.15rem;">Quantum Neon Slush</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Electric blue raspberry icy slush with zero sugar.</p>
+              <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.85rem;">
+                <span style="color: var(--accent-cyan); font-weight: 700;">$5.00</span>
+                <span style="color: var(--text-muted);">180 kcal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Angus Hotdog -->
+          <div class="snack-card" id="card-HOTDOG" onclick="selectBase('HOTDOG')">
+            <img src="https://images.unsplash.com/photo-1619740455993-9e612b1af08a?w=400&auto=format&fit=crop&q=80" alt="Hotdog" class="snack-img">
+            <div class="snack-body">
+              <h4 style="font-size: 1.15rem;">Gourmet Angus Beef Dog</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Toasted brioche bun & smoked garlic aioli.</p>
+              <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.85rem;">
+                <span style="color: var(--accent-cyan); font-weight: 700;">$8.50</span>
+                <span style="color: var(--text-muted);">520 kcal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: JAVA DECORATOR ADD-ONS -->
+        <div class="snack-customizer-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h3 style="font-size: 1.25rem;">2️⃣ Apply Java Decorators (Fluid Add-ons)</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Each decorator dynamically wraps the base item on the backend.</p>
+            </div>
+            <span class="brand-badge">PATTERN: JAVA DECORATOR</span>
+          </div>
+
+          <div class="decorator-options-grid">
+            <div class="decorator-toggle" id="dec-CHEESE" onclick="toggleAddOn('CHEESE')">
+              <input type="checkbox" id="chk-CHEESE" style="pointer-events: none;">
+              <div>
+                <strong style="font-size: 0.9rem; display: block;">🧀 Extra Queso Drizzle</strong>
+                <span style="font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-mono);">+$1.75 | +140 kcal</span>
+              </div>
+            </div>
+
+            <div class="decorator-toggle" id="dec-TRUFFLE" onclick="toggleAddOn('TRUFFLE')">
+              <input type="checkbox" id="chk-TRUFFLE" style="pointer-events: none;">
+              <div>
+                <strong style="font-size: 0.9rem; display: block;">🍄 White Truffle Glaze</strong>
+                <span style="font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-mono);">+$2.50 | +110 kcal</span>
+              </div>
+            </div>
+
+            <div class="decorator-toggle" id="dec-LARGE" onclick="toggleAddOn('LARGE')">
+              <input type="checkbox" id="chk-LARGE" style="pointer-events: none;">
+              <div>
+                <strong style="font-size: 0.9rem; display: block;">🥤 Mega-Size (1.5x)</strong>
+                <span style="font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-mono);">+$2.25 | +50% Vol</span>
+              </div>
+            </div>
+
+            <div class="decorator-toggle" id="dec-CARAMEL" onclick="toggleAddOn('CARAMEL')">
+              <input type="checkbox" id="chk-CARAMEL" style="pointer-events: none;">
+              <div>
+                <strong style="font-size: 0.9rem; display: block;">🍯 Salted Caramel</strong>
+                <span style="font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-mono);">+$1.80 | +160 kcal</span>
+              </div>
+            </div>
+
+            <div class="decorator-toggle" id="dec-JALAPENO" onclick="toggleAddOn('JALAPENO')">
+              <input type="checkbox" id="chk-JALAPENO" style="pointer-events: none;">
+              <div>
+                <strong style="font-size: 0.9rem; display: block;">🌶️ Roasted Jalapeños</strong>
+                <span style="font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-mono);">+$1.25 | +25 kcal</span>
+              </div>
+            </div>
+
+            <div class="decorator-toggle" id="dec-COMBO" onclick="toggleAddOn('COMBO')">
+              <input type="checkbox" id="chk-COMBO" style="pointer-events: none;">
+              <div>
+                <strong style="font-size: 0.9rem; display: block;">📦 Cyber Combo Bundle</strong>
+                <span style="font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-mono);">+$4.50 | Large Soda+Candy</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- REAL-TIME JAVA DECORATED OUTPUT -->
+          <div style="background: #090b12; border: 1px solid var(--border-glow); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1.5rem;">
+            <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase; font-family: var(--font-mono);">
+              Java Decorator Evaluated Description:
+            </div>
+            <div id="live-snack-desc" style="font-size: 1.05rem; font-weight: 700; color: #fff; margin: 0.25rem 0 0.75rem 0;">
+              Cyber Truffle Popcorn
+            </div>
+
+            <!-- Calorie & Price Meter -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center;">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-family: var(--font-mono);">
+                  <span style="color: var(--text-muted);">Calorie Load:</span>
+                  <strong id="live-calorie-val" style="color: var(--accent-amber);">420 kcal</strong>
+                </div>
+                <div class="calorie-meter-bar">
+                  <div class="calorie-meter-fill" id="calorie-bar-fill"></div>
+                </div>
+                <div id="live-burn-time" style="font-size: 0.7rem; color: var(--text-dark); margin-top: 0.35rem;">
+                  ≈ 45 min moderate walking to burn
+                </div>
+              </div>
+
+              <div style="text-align: right;">
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Decorated Unit Price:</div>
+                <div id="live-price-val" style="font-size: 1.7rem; font-weight: 900; color: var(--accent-emerald); font-family: var(--font-mono);">
+                  $7.50
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; text-align: right;">
+              <button class="btn btn-primary" onclick="addCustomizedSnackToOrder()">
+                ➕ Add Customized Item to Order
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- STEP 3: CINEMA SEAT DELIVERY OPTION -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.5rem;">
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem;">3️⃣ Delivery & Service Method</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <label style="background: rgba(0,240,255,0.08); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+              <input type="radio" name="deliveryMethod" value="SEAT" checked>
+              <div>
+                <strong style="display: block; font-size: 0.95rem;">🚀 Express Seat Delivery</strong>
+                <span style="font-size: 0.78rem; color: var(--text-muted);">Delivered warm directly to your booked cinema seats at intermission.</span>
+              </div>
+            </label>
+
+            <label style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+              <input type="radio" name="deliveryMethod" value="COUNTER">
+              <div>
+                <strong style="display: block; font-size: 0.95rem;">🏃 Counter Priority Pickup</strong>
+                <span style="font-size: 0.78rem; color: var(--text-muted);">Skip the regular queue with your ticket barcode.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: ORDER CART & CHECKOUT -->
+      <aside class="sidebar-panel">
+        <h3 class="summary-title">Order Breakdown</h3>
+
+        <div class="summary-row">
+          <span>Movie</span>
+          <strong id="cart-movie-title" style="color: #fff; text-align: right;">Loading...</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Allocated Seats</span>
+          <strong id="cart-seats-list" style="color: var(--accent-cyan); font-family: var(--font-mono);">A1, A2</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Movie Tickets Subtotal</span>
+          <strong id="cart-ticket-subtotal" style="font-family: var(--font-mono);">$0.00</strong>
+        </div>
+
+        <div style="margin: 1.25rem 0; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">Snacks in Cart:</div>
+          <div id="cart-snacks-items" style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">No snacks added yet. (Optional)</span>
+          </div>
+        </div>
+
+        <div class="summary-row total">
+          <span>Total Payable</span>
+          <span id="cart-grand-total">$0.00</span>
+        </div>
+
+        <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="margin-bottom: 0.5rem;">
+            <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Your Name / VIP Callout:</label>
+            <input type="text" id="cust-name" value="Niranjan V." style="width: 100%; padding: 0.65rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: #fff; border-radius: 8px;">
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Email for e-Ticket Pass:</label>
+            <input type="email" id="cust-email" value="niranjan@darkops.cinema" style="width: 100%; padding: 0.65rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: #fff; border-radius: 8px;">
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%;" onclick="executeCheckout()">
+            ⚡ Confirm & Generate Barcode Ticket
+          </button>
+        </div>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    let currentBase = 'POPCORN';
+    let currentAddOns = [];
+    let currentDecoratedResult = { price: 7.50, calories: 420, description: 'Cyber Truffle Popcorn' };
+    let snackCart = [];
+    let bookingSelection = null;
+
+    async function initSnackLab() {
+      bookingSelection = CinemaStore.getCurrentSelection();
+      if (!bookingSelection || !bookingSelection.selectedSeats || bookingSelection.selectedSeats.length === 0) {
+        showToast("No active seat selection found. Redirecting to movie list...", "warning");
+        setTimeout(() => window.location.href = 'index.html', 1500);
+        return;
+      }
+
+      document.getElementById('cart-movie-title').textContent = bookingSelection.movieTitle;
+      const seatLabels = bookingSelection.selectedSeats.map(s => `${s.row}${s.number}`).join(', ');
+      document.getElementById('cart-seats-list').textContent = seatLabels;
+      document.getElementById('cart-ticket-subtotal').textContent = `$${bookingSelection.totalTicketPrice.toFixed(2)}`;
+
+      await calculateLiveSnack();
+      updateCartDisplay();
+    }
+
+    function selectBase(baseKey) {
+      currentBase = baseKey;
+      document.querySelectorAll('.snack-card').forEach(card => card.style.borderColor = 'var(--border-subtle)');
+      const activeCard = document.getElementById(`card-${baseKey}`);
+      if (activeCard) activeCard.style.borderColor = 'var(--accent-cyan)';
+
+      calculateLiveSnack();
+    }
+
+    function toggleAddOn(addonKey) {
+      const idx = currentAddOns.indexOf(addonKey);
+      const chk = document.getElementById(`chk-${addonKey}`);
+      const box = document.getElementById(`dec-${addonKey}`);
+
+      if (idx >= 0) {
+        currentAddOns.splice(idx, 1);
+        if (chk) chk.checked = false;
+        if (box) box.classList.remove('active');
+      } else {
+        currentAddOns.push(addonKey);
+        if (chk) chk.checked = true;
+        if (box) box.classList.add('active');
+      }
+
+      calculateLiveSnack();
+    }
+
+    async function calculateLiveSnack() {
+      try {
+        const res = await API.calculateSnack(currentBase, currentAddOns);
+        currentDecoratedResult = res;
+
+        document.getElementById('live-snack-desc').textContent = res.description;
+        document.getElementById('live-price-val').textContent = `$${res.price.toFixed(2)}`;
+        document.getElementById('live-calorie-val').textContent = `${res.calories} kcal`;
+
+        // Calorie meter visual fill (0 to 1200 kcal scale)
+        const pct = Math.min(100, (res.calories / 1200) * 100);
+        document.getElementById('calorie-bar-fill').style.width = `${pct}%`;
+
+        const walkingMinutes = Math.round(res.calories / 9.5);
+        document.getElementById('live-burn-time').textContent = `≈ ${walkingMinutes} min moderate walking to burn`;
+      } catch(err) {
+        console.error("Decorator calculation error:", err);
+      }
+    }
+
+    function addCustomizedSnackToOrder() {
+      snackCart.push({
+        base: currentBase,
+        addOns: [...currentAddOns],
+        description: currentDecoratedResult.description,
+        price: currentDecoratedResult.price,
+        calories: currentDecoratedResult.calories
+      });
+
+      showToast(`Added: ${currentDecoratedResult.description}`, 'success');
+      updateCartDisplay();
+    }
+
+    function removeSnack(index) {
+      snackCart.splice(index, 1);
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const container = document.getElementById('cart-snacks-items');
+      if (snackCart.length === 0) {
+        container.innerHTML = '<span style="font-size: 0.8rem; color: var(--text-muted);">No snacks added yet. (Optional)</span>';
+      } else {
+        container.innerHTML = '';
+        snackCart.forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.style.cssText = 'background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center;';
+          div.innerHTML = `
+            <div>
+              <div style="color: #fff; font-weight: 600;">${item.description}</div>
+              <div style="font-family: var(--font-mono); color: var(--accent-cyan);">$${item.price.toFixed(2)} | ${item.calories} kcal</div>
+            </div>
+            <button onclick="removeSnack(${idx})" style="background: transparent; border: none; color: var(--accent-rose); cursor: pointer; font-size: 1.1rem;">✕</button>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      const snacksTotal = snackCart.reduce((sum, s) => sum + s.price, 0);
+      const ticketsTotal = bookingSelection ? bookingSelection.totalTicketPrice : 0;
+      const grandTotal = ticketsTotal + snacksTotal;
+
+      document.getElementById('cart-grand-total').textContent = `$${grandTotal.toFixed(2)}`;
+    }
+
+    async function executeCheckout() {
+      const custName = document.getElementById('cust-name').value || 'Valued Guest';
+      const custEmail = document.getElementById('cust-email').value || 'guest@darkops.cinema';
+
+      const snacksTotal = snackCart.reduce((sum, s) => sum + s.price, 0);
+      const grandTotal = bookingSelection.totalTicketPrice + snacksTotal;
+
+      showToast("Submitting booking to Java SQLite Backend...", "info");
+
+      try {
+        const checkoutPayload = {
+          movieId: bookingSelection.movieId,
+          showTime: bookingSelection.showTime,
+          seatIds: bookingSelection.selectedSeats.map(s => s.id),
+          totalAmount: grandTotal,
+          vibePreference: bookingSelection.vibePreference || 'QUIET',
+          customerName: custName,
+          customerEmail: custEmail,
+          snacks: snackCart,
+          splitCode: bookingSelection.splitCode || null
+        };
+
+        const result = await API.checkout(checkoutPayload);
+        if (result && result.bookingRef) {
+          CinemaStore.setLastBooking(result);
+          CinemaStore.setSnackOrder(snackCart);
+
+          showToast("Booking Confirmed! Generating Holographic Ticket...", "success");
+          setTimeout(() => {
+            window.location.href = `confirmation.html?ref=${encodeURIComponent(result.bookingRef)}`;
+          }, 800);
+        } else {
+          showToast("Checkout failed. " + (result.error || ""), "warning");
+        }
+      } catch(err) {
+        console.error("Checkout error:", err);
+        showToast("Error processing checkout.", "warning");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initSnackLab);
+  </script>
+</body>
+</html>

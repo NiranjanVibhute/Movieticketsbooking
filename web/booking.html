@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seating POV & Booking // DARK-OPS CINEMA</title>
+  <meta name="description" content="Interactive seating grid with 3D POV perspective simulator, vibe heatmap filters, and gap minimizer group allocator.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">⚡</div>
+        <span class="brand-title">DARK-OPS CINEMA</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">🎬 Movies</a></li>
+        <li><a href="booking.html" class="nav-link active">💺 Seating POV</a></li>
+        <li><a href="snacks.html" class="nav-link">🍿 Snack Lab</a></li>
+        <li><a href="confirmation.html" class="nav-link">🎟️ Ticket Pass</a></li>
+      </ul>
+
+      <div class="nav-status-pill">
+        <span class="status-dot"></span>
+        <span id="nav-movie-title">SELECTING SEATS</span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- BREADCRUMB & HEADER -->
+    <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <a href="index.html" style="color: var(--accent-cyan); font-size: 0.85rem; font-family: var(--font-mono);">← BACK TO MOVIE DASHBOARD</a>
+        <h1 style="font-size: 2.2rem; margin-top: 0.25rem;" id="page-movie-heading">Interactive Seating Experience</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;" id="page-movie-meta">Loading screening session details...</p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-outline" onclick="openSplitPayModal()" id="btn-split-modal">
+          👥 Group Split-Pay (10m Lock)
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN TWO-COLUMN BOOKING LAYOUT -->
+    <div class="booking-layout">
+
+      <!-- LEFT COLUMN: POV VIEW + VIBE SELECTOR + SEAT MATRIX -->
+      <div class="booking-main-col">
+
+        <!-- 3D CANVAS POV PREVIEW SECTION -->
+        <div class="pov-container">
+          <div class="pov-header">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span style="font-size: 1.2rem;">👁️</span>
+              <h3 style="font-size: 1.1rem;">Live Cinema Screen POV Angle Preview</h3>
+            </div>
+            <div class="pov-meta-badge" id="pov-current-row">POV: ROW D (CENTER SWEET SPOT)</div>
+          </div>
+
+          <canvas id="povCanvas" class="pov-canvas" width="700" height="220"></canvas>
+          <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-dark); font-family: var(--font-mono);">
+            <span>Hover or click any seat below to inspect real-time row perspective & angle</span>
+            <span id="pov-angle-deg">CURVATURE: 124° | ELEVATION: 18°</span>
+          </div>
+        </div>
+
+        <!-- VIBE PREFERENCES SELECTOR & HEATMAP -->
+        <div class="vibe-selector-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>✨</span> Theater Vibe Preference Heatmap
+              </h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Select your audience energy level to illuminate matched seating zones in real time.
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;" id="vibe-pills-stat">
+              <!-- Live percentage stats from Java backend -->
+            </div>
+          </div>
+
+          <div class="vibe-options-grid">
+            <div class="vibe-option-btn active-quiet" id="vibe-btn-quiet" onclick="setVibePreference('QUIET')">
+              <div class="vibe-title" style="color: var(--vibe-quiet);">🤫 Quiet Focus Zone</div>
+              <div class="vibe-desc">Distraction-free, zero whispering, pure cinematic immersion. Recommended for cinephiles.</div>
+            </div>
+
+            <div class="vibe-option-btn" id="vibe-btn-fan" onclick="setVibePreference('EXCITED_FAN')">
+              <div class="vibe-title" style="color: var(--vibe-fan);">🔥 Excited Fan Zone</div>
+              <div class="vibe-desc">Cheers, applause, reactions, and high-energy atmosphere for epic moments!</div>
+            </div>
+
+            <div class="vibe-option-btn" id="vibe-btn-family" onclick="setVibePreference('FAMILY')">
+              <div class="vibe-title" style="color: var(--vibe-family);">🍿 Family & Social</div>
+              <div class="vibe-desc">Relaxed atmosphere, spacious aisles, ideal for family and casual groups.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEATING MATRIX SECTION -->
+        <div class="seating-section">
+          <!-- Screen Arc -->
+          <div class="cinema-screen-wrap">
+            <div class="cinema-curved-screen">CURVED DUAL-LASER IMAX SCREEN</div>
+            <div class="screen-label">FRONT OF AUDITORIUM</div>
+          </div>
+
+          <!-- Seating Grid -->
+          <div class="seating-matrix" id="seating-matrix">
+            <!-- Dynamically populated rows A-G -->
+            <p style="color: var(--text-muted); padding: 2rem;">Loading live seating matrix from database...</p>
+          </div>
+
+          <!-- Legend -->
+          <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); font-size: 0.8rem; color: var(--text-muted);">
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="width: 14px; height: 14px; background: #181d2f; border: 1px solid rgba(255,255,255,0.2); border-radius: 3px;"></div>
+              <span>Available</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="width: 14px; height: 14px; background: var(--accent-cyan); border-radius: 3px;"></div>
+              <span>Selected</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="width: 14px; height: 14px; background: #101218; border: 1px solid rgba(255,255,255,0.04); border-radius: 3px; opacity: 0.5;"></div>
+              <span>Booked</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="width: 14px; height: 14px; background: rgba(245, 158, 11, 0.3); border: 1px solid var(--accent-amber); border-radius: 3px;"></div>
+              <span>Split-Locked</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="width: 8px; height: 8px; background: var(--vibe-quiet); border-radius: 50%;"></div>
+              <span>Quiet Vibe</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="width: 8px; height: 8px; background: var(--vibe-fan); border-radius: 50%;"></div>
+              <span>Fan Vibe</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="width: 8px; height: 8px; background: var(--vibe-family); border-radius: 50%;"></div>
+              <span>Family Vibe</span>
+            </div>
+          </div>
+
+          <!-- GAP MINIMIZER SMART CONTROLS -->
+          <div class="gap-minimizer-box">
+            <div class="gap-info">
+              <h4><span>🤖</span> Java Gap Minimizer Engine</h4>
+              <p id="gap-minimizer-text">Find optimal contiguous group seats without leaving 1-seat isolated gaps.</p>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <label style="font-size: 0.85rem; color: var(--text-muted);">Group Size:</label>
+              <select id="opt-group-size" class="group-size-select">
+                <option value="1">1 Person</option>
+                <option value="2" selected>2 People</option>
+                <option value="3">3 People</option>
+                <option value="4">4 People</option>
+                <option value="5">5 People</option>
+                <option value="6">6 People</option>
+              </select>
+              <button class="btn btn-outline" style="border-color: var(--accent-purple); color: #d8b4fe;" onclick="runGapOptimization()">
+                ⚡ Auto-Pick Best Seats
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: SELECTION SUMMARY & CHECKOUT/SNACKS BUTTON -->
+      <aside class="sidebar-panel">
+        <h3 class="summary-title">Booking Summary</h3>
+
+        <div class="summary-row">
+          <span>Movie</span>
+          <strong id="sum-movie-name" style="color: #fff; text-align: right;">Loading...</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Showtime</span>
+          <strong id="sum-showtime" style="color: var(--accent-cyan); font-family: var(--font-mono);">18:30</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Audience Vibe</span>
+          <strong id="sum-vibe" style="color: var(--vibe-quiet); font-family: var(--font-mono);">QUIET</strong>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <span style="font-size: 0.8rem; color: var(--text-dark); text-transform: uppercase; font-weight: 700;">Selected Seats:</span>
+          <div class="selected-seats-badge-list" id="selected-seats-list">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">No seats selected yet. Click grid or auto-pick.</span>
+          </div>
+        </div>
+
+        <div class="summary-row total">
+          <span>Subtotal</span>
+          <span id="sum-total-price">$0.00</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+          <button class="btn btn-primary" style="width: 100%;" onclick="proceedToSnacks()" id="btn-proceed-snacks">
+            Proceed to Snack Customizer 🍿 ➔
+          </button>
+          <button class="btn btn-purple" style="width: 100%;" onclick="openSplitPayModal()">
+            Create Group Split-Pay Link 👥
+          </button>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding: 0.75rem; background: rgba(0,240,255,0.05); border: 1px solid rgba(0,240,255,0.15); border-radius: var(--radius-sm); font-size: 0.75rem; color: var(--text-muted);">
+          ⚡ <strong>Pro Tip:</strong> Row D is the optimal acoustic sweet spot for IMAX 12-channel surround sound.
+        </div>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- SPLIT PAY MODAL -->
+  <div class="modal-backdrop" id="split-pay-modal">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeSplitPayModal()">✕</button>
+
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 1.6rem;">👥</span>
+        <h2 style="font-size: 1.4rem;">Group Split-Pay Lock</h2>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">
+        Locks selected seats for <strong>10 minutes</strong> while your friends contribute their split share directly.
+      </p>
+
+      <div id="split-creation-view">
+        <div style="margin: 1.25rem 0;">
+          <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Organizer Name:</label>
+          <input type="text" id="split-organizer-name" value="Alex" style="width: 100%; padding: 0.65rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: #fff; border-radius: 8px; font-family: var(--font-main);">
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Number of Friends Splitting:</label>
+          <input type="number" id="split-participants-count" value="2" min="2" max="10" style="width: 100%; padding: 0.65rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: #fff; border-radius: 8px; font-family: var(--font-mono);">
+        </div>
+
+        <button class="btn btn-purple" style="width: 100%;" onclick="createSplitSession()">
+          Generate Split-Pay Link (10m TTL) ➔
+        </button>
+      </div>
+
+      <!-- ACTIVE SPLIT VIEW -->
+      <div id="split-active-view" style="display: none;">
+        <div class="split-timer-box">
+          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dark);">Session Expires In:</div>
+          <div class="timer-digits" id="split-timer-display">09:59</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);" id="split-seats-locked-label">Seats Locked in Java Cache</div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+          <div class="summary-row">
+            <span>Per-Person Share:</span>
+            <strong id="split-per-person" style="color: var(--accent-emerald); font-size: 1.2rem; font-family: var(--font-mono);">$0.00</strong>
+          </div>
+          <div class="summary-row">
+            <span>Total Amount:</span>
+            <strong id="split-total-amount" style="font-family: var(--font-mono);">$0.00</strong>
+          </div>
+          <div class="summary-row">
+            <span>Paid Status:</span>
+            <strong id="split-paid-progress" style="color: var(--accent-cyan); font-family: var(--font-mono);">1 / 2 Paid</strong>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Shareable Split Code:</label>
+          <input type="text" id="split-share-code" readonly style="width: 100%; padding: 0.5rem; background: #000; border: 1px solid var(--accent-purple); color: var(--accent-cyan); font-family: var(--font-mono); font-size: 0.9rem; border-radius: 6px; text-align: center; margin-top: 0.25rem;">
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+          <button class="btn btn-outline" style="border-color: var(--accent-emerald); color: var(--accent-emerald);" onclick="simulateFriendPayment()">
+            ⚡ Simulate Friend Contributing ($)
+          </button>
+          <button class="btn btn-primary" id="btn-split-complete" style="display: none;" onclick="proceedToSnacksWithSplit()">
+            All Friends Paid! Proceed to Snacks 🍿 ➔
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let currentMovieId = 'mov-dune2';
+    let currentShowTime = '18:30';
+    let currentVibePreference = 'QUIET';
+    let seatMapData = [];
+    let selectedSeats = [];
+    let movieData = null;
+    let activeSplitSession = null;
+    let splitTimerInterval = null;
+    let currentRowFocus = 'D';
+
+    const canvas = document.getElementById('povCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Initialize Booking Page
+    async function initBooking() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('movie')) currentMovieId = urlParams.get('movie');
+      if (urlParams.get('time')) currentShowTime = urlParams.get('time');
+
+      try {
+        movieData = await API.getMovie(currentMovieId);
+        document.getElementById('nav-movie-title').textContent = movieData.title.toUpperCase();
+        document.getElementById('page-movie-heading').textContent = movieData.title;
+        document.getElementById('page-movie-meta').textContent = `${movieData.genre} | ${movieData.duration} min | Showtime: ${currentShowTime} | Base Price: $${movieData.basePrice.toFixed(2)}`;
+        document.getElementById('sum-movie-name').textContent = movieData.title;
+        document.getElementById('sum-showtime').textContent = currentShowTime;
+
+        await loadSeatsAndHeatmap();
+        drawPOV(currentRowFocus);
+
+        // Check if split code query parameter is present
+        const splitCodeParam = urlParams.get('split');
+        if (splitCodeParam) {
+          checkExistingSplit(splitCodeParam);
+        }
+      } catch(err) {
+        console.error("Initialization error:", err);
+        showToast("Error loading movie booking data.", "warning");
+      }
+    }
+
+    async function loadSeatsAndHeatmap() {
+      try {
+        const [seatsRes, heatmapRes] = await Promise.all([
+          API.getSeats(currentMovieId, currentShowTime),
+          API.getVibeHeatmap(currentMovieId, currentShowTime)
+        ]);
+
+        seatMapData = seatsRes.seats || [];
+        renderSeatingMatrix(seatMapData);
+        renderVibeStats(heatmapRes);
+      } catch(err) {
+        console.error("Error loading seats:", err);
+      }
+    }
+
+    function renderVibeStats(heatmap) {
+      const statContainer = document.getElementById('vibe-pills-stat');
+      if (!heatmap || !heatmap.vibeDistribution) return;
+
+      const q = heatmap.vibeDistribution['QUIET'] || 0;
+      const fan = heatmap.vibeDistribution['EXCITED_FAN'] || 0;
+      const fam = heatmap.vibeDistribution['FAMILY'] || 0;
+
+      statContainer.innerHTML = `
+        <span class="perk-tag" style="border-color: var(--vibe-quiet); color: var(--vibe-quiet);">🤫 ${q}% Quiet</span>
+        <span class="perk-tag" style="border-color: var(--vibe-fan); color: var(--vibe-fan);">🔥 ${fan}% Fans</span>
+        <span class="perk-tag" style="border-color: var(--vibe-family); color: var(--vibe-family);">🍿 ${fam}% Family</span>
+      `;
+    }
+
+    function renderSeatingMatrix(seats) {
+      const matrix = document.getElementById('seating-matrix');
+      matrix.innerHTML = '';
+
+      // Group seats by row
+      const rows = {};
+      seats.forEach(s => {
+        if (!rows[s.row]) rows[s.row] = [];
+        rows[s.row].push(s);
+      });
+
+      const rowKeys = Object.keys(rows).sort();
+
+      rowKeys.forEach(rowKey => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'seat-row';
+
+        const rowIdLabel = document.createElement('div');
+        rowIdLabel.className = 'row-identifier';
+        rowIdLabel.textContent = rowKey;
+        rowDiv.appendChild(rowIdLabel);
+
+        const rowSeats = rows[rowKey].sort((a,b) => a.number - b.number);
+
+        rowSeats.forEach((seat, idx) => {
+          // Add aisle gap in the middle (after seat 5)
+          if (idx === 5) {
+            const aisle = document.createElement('div');
+            aisle.style.width = '24px';
+            rowDiv.appendChild(aisle);
+          }
+
+          const seatEl = document.createElement('div');
+          seatEl.className = 'seat-item';
+          seatEl.id = `seat-${seat.id}`;
+          seatEl.textContent = `${seat.number}`;
+          seatEl.title = `Seat ${seat.row}${seat.number} - Tier: ${seat.tier} - Price: $${seat.price.toFixed(2)} - Vibe: ${seat.vibeTag}`;
+
+          // Status styles
+          if (seat.isBooked) {
+            seatEl.classList.add('booked');
+          } else if (seat.isLocked) {
+            seatEl.classList.add('locked');
+          } else if (selectedSeats.some(s => s.id === seat.id)) {
+            seatEl.classList.add('selected');
+          }
+
+          // Vibe halo overlay
+          if (seat.vibeTag === 'QUIET') seatEl.classList.add('vibe-quiet');
+          else if (seat.vibeTag === 'EXCITED_FAN') seatEl.classList.add('vibe-fan');
+          else if (seat.vibeTag === 'FAMILY') seatEl.classList.add('vibe-family');
+
+          // Hover updates POV preview
+          seatEl.addEventListener('mouseenter', () => {
+            currentRowFocus = seat.row;
+            drawPOV(seat.row, seat.number);
+          });
+
+          // Click handler
+          seatEl.addEventListener('click', () => {
+            if (!seat.isBooked && !seat.isLocked) {
+              toggleSeatSelection(seat);
+            }
+          });
+
+          rowDiv.appendChild(seatEl);
+        });
+
+        matrix.appendChild(rowDiv);
+      });
+    }
+
+    function toggleSeatSelection(seat) {
+      const idx = selectedSeats.findIndex(s => s.id === seat.id);
+      if (idx >= 0) {
+        selectedSeats.splice(idx, 1);
+      } else {
+        selectedSeats.push(seat);
+      }
+      updateSummary();
+      renderSeatingMatrix(seatMapData);
+      drawPOV(seat.row, seat.number);
+    }
+
+    function setVibePreference(vibe) {
+      currentVibePreference = vibe;
+      document.getElementById('sum-vibe').textContent = vibe;
+
+      document.getElementById('vibe-btn-quiet').className = `vibe-option-btn ${vibe === 'QUIET' ? 'active-quiet' : ''}`;
+      document.getElementById('vibe-btn-fan').className = `vibe-option-btn ${vibe === 'EXCITED_FAN' ? 'active-fan' : ''}`;
+      document.getElementById('vibe-btn-family').className = `vibe-option-btn ${vibe === 'FAMILY' ? 'active-family' : ''}`;
+
+      showToast(`Theater Vibe preference filtered for: ${vibe}`, 'info');
+      renderSeatingMatrix(seatMapData);
+    }
+
+    function updateSummary() {
+      const listEl = document.getElementById('selected-seats-list');
+      const totalEl = document.getElementById('sum-total-price');
+
+      if (selectedSeats.length === 0) {
+        listEl.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">No seats selected yet. Click grid or auto-pick.</span>';
+        totalEl.textContent = '$0.00';
+        return;
+      }
+
+      listEl.innerHTML = '';
+      let total = 0;
+      selectedSeats.forEach(s => {
+        total += s.price;
+        const pill = document.createElement('span');
+        pill.className = 'seat-tag-pill';
+        pill.textContent = `${s.row}${s.number} ($${s.price.toFixed(2)})`;
+        listEl.appendChild(pill);
+      });
+
+      totalEl.textContent = `$${total.toFixed(2)}`;
+    }
+
+    // GAP MINIMIZER INTEGRATION
+    async function runGapOptimization() {
+      const groupSize = parseInt(document.getElementById('opt-group-size').value, 10);
+      showToast(`Executing Java Gap Minimizer for ${groupSize} seats...`, 'info');
+
+      try {
+        const result = await API.optimizeSeats({
+          movieId: currentMovieId,
+          showTime: currentShowTime,
+          groupSize: groupSize,
+          preferredVibe: currentVibePreference,
+          preferredTier: ''
+        });
+
+        if (result.found && result.recommendedSeats.length > 0) {
+          selectedSeats = result.recommendedSeats;
+          updateSummary();
+          renderSeatingMatrix(seatMapData);
+
+          // Highlight recommended seats
+          result.recommendedSeats.forEach(s => {
+            const el = document.getElementById(`seat-${s.id}`);
+            if (el) el.classList.add('recommended');
+          });
+
+          currentRowFocus = result.row;
+          drawPOV(result.row);
+          document.getElementById('gap-minimizer-text').textContent = `✓ ${result.reason}`;
+          showToast(`Allocated optimal contiguous block in Row ${result.row}! Score: ${result.score}`, 'success');
+        } else {
+          showToast(result.reason || "No contiguous block found without isolated gaps.", 'warning');
+        }
+      } catch(err) {
+        console.error("Gap Minimizer error:", err);
+      }
+    }
+
+    // 3D CANVAS POV DRAWING ENGINE
+    function drawPOV(rowLetter, seatNumber = 5) {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Row depth and perspective calculation
+      const rowIndex = rowLetter ? (rowLetter.charCodeAt(0) - 'A'.charCodeAt(0)) : 3; // 0 = A, 6 = G
+      const depthFactor = 1 - (rowIndex * 0.08); // Closer = bigger screen
+      const screenWidth = (w * 0.78) * depthFactor;
+      const screenHeight = (h * 0.58) * depthFactor;
+      const screenX = (w - screenWidth) / 2;
+      const screenY = 25 + (rowIndex * 10);
+
+      // Background ambient gradient
+      const bgGrad = ctx.createRadialGradient(w/2, h/2, 20, w/2, h/2, w);
+      bgGrad.addColorStop(0, '#0f121d');
+      bgGrad.addColorStop(1, '#050608');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Floor perspective lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 10; i++) {
+        ctx.beginPath();
+        ctx.moveTo((w/10) * i, h);
+        ctx.lineTo(w/2, h/2 - 20);
+        ctx.stroke();
+      }
+
+      // Ambient screen glow
+      const glowGrad = ctx.createRadialGradient(w/2, screenY + screenHeight/2, 10, w/2, screenY + screenHeight/2, screenWidth);
+      glowGrad.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
+      glowGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.15)');
+      glowGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = glowGrad;
+      ctx.fillRect(screenX - 40, screenY - 20, screenWidth + 80, screenHeight + 50);
+
+      // Curved Screen drawing (Quadratic Bezier arc)
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(screenX, screenY + 20);
+      ctx.quadraticCurveTo(w/2, screenY - 15, screenX + screenWidth, screenY + 20);
+      ctx.lineTo(screenX + screenWidth, screenY + screenHeight);
+      ctx.quadraticCurveTo(w/2, screenY + screenHeight - 15, screenX, screenY + screenHeight);
+      ctx.closePath();
+
+      // Screen surface
+      const screenGrad = ctx.createLinearGradient(screenX, screenY, screenX + screenWidth, screenY + screenHeight);
+      screenGrad.addColorStop(0, '#00e5ff');
+      screenGrad.addColorStop(0.5, '#2e1065');
+      screenGrad.addColorStop(1, '#ff007a');
+      ctx.fillStyle = screenGrad;
+      ctx.fill();
+
+      // Screen border glow
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = 3;
+      ctx.shadowColor = '#00f0ff';
+      ctx.shadowBlur = 15;
+      ctx.stroke();
+      ctx.restore();
+
+      // Cinema Movie Title Mock on Screen
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.font = 'bold 16px "Space Grotesk", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(movieData ? movieData.title.toUpperCase() : "DARK-OPS CINEMA", w/2, screenY + screenHeight/2);
+      ctx.font = '10px "JetBrains Mono", monospace';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.fillText("IMAX 70MM DUAL-LASER // DOLBY ATMOS 128-CH", w/2, screenY + screenHeight/2 + 20);
+
+      // Foreground row silhouettes
+      ctx.fillStyle = '#08090d';
+      ctx.fillRect(0, h - 30, w, 30);
+
+      // Active seat pointer
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.8)';
+      ctx.beginPath();
+      const seatX = (w * 0.2) + ((seatNumber / 10) * (w * 0.6));
+      ctx.arc(seatX, h - 14, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Update badge text
+      const povLabel = document.getElementById('pov-current-row');
+      if (povLabel) {
+        povLabel.textContent = `POV: ROW ${rowLetter} (SEAT ${seatNumber}) - ${rowLetter <= 'B' ? 'VIP FRONT IMMERSION' : rowLetter <= 'D' ? 'OPTIMAL SWEET SPOT' : 'WIDE PANORAMIC'}`;
+      }
+    }
+
+    // SPLIT-PAY FLOW
+    function openSplitPayModal() {
+      if (selectedSeats.length === 0) {
+        showToast("Please select at least 1 seat to generate a split-pay link.", "warning");
+        return;
+      }
+      document.getElementById('split-pay-modal').classList.add('active');
+    }
+
+    function closeSplitPayModal() {
+      document.getElementById('split-pay-modal').classList.remove('active');
+    }
+
+    async function createSplitSession() {
+      const organizer = document.getElementById('split-organizer-name').value || 'Organizer';
+      const participants = parseInt(document.getElementById('split-participants-count').value, 10) || 2;
+      const totalAmount = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+
+      try {
+        const res = await API.createSplitPay({
+          movieId: currentMovieId,
+          showTime: currentShowTime,
+          seatIds: selectedSeats.map(s => s.id),
+          totalAmount: totalAmount,
+          participants: participants,
+          creatorName: organizer
+        });
+
+        activeSplitSession = res;
+        document.getElementById('split-creation-view').style.display = 'none';
+        document.getElementById('split-active-view').style.display = 'block';
+
+        document.getElementById('split-per-person').textContent = `$${res.perPersonAmount.toFixed(2)}`;
+        document.getElementById('split-total-amount').textContent = `$${res.totalAmount.toFixed(2)}`;
+        document.getElementById('split-paid-progress').textContent = `1 / ${res.totalParticipants} Paid (${organizer})`;
+        document.getElementById('split-share-code').value = res.splitCode;
+
+        startSplitCountdown(res.remainingSeconds);
+        showToast("Split-Pay Session created! 10-minute lock activated in Java Cache.", "success");
+      } catch(err) {
+        console.error("Split creation error:", err);
+      }
+    }
+
+    function startSplitCountdown(seconds) {
+      if (splitTimerInterval) clearInterval(splitTimerInterval);
+      let rem = seconds;
+
+      splitTimerInterval = setInterval(() => {
+        rem--;
+        if (rem <= 0) {
+          clearInterval(splitTimerInterval);
+          document.getElementById('split-timer-display').textContent = 'EXPIRED';
+          showToast("Split-Pay session expired. Seat locks released.", "warning");
+          return;
+        }
+
+        const m = Math.floor(rem / 60).toString().padStart(2, '0');
+        const s = (rem % 60).toString().padStart(2, '0');
+        document.getElementById('split-timer-display').textContent = `${m}:${s}`;
+      }, 1000);
+    }
+
+    async function simulateFriendPayment() {
+      if (!activeSplitSession) return;
+      const names = ['Jordan', 'Taylor', 'Casey', 'Sam', 'Riley', 'Morgan'];
+      const randomFriend = names[Math.floor(Math.random() * names.length)];
+
+      try {
+        const res = await API.contributeSplitPay(activeSplitSession.splitCode, randomFriend);
+        if (res.success) {
+          document.getElementById('split-paid-progress').textContent = `${res.paidCount} / ${res.totalParticipants} Paid (+ ${randomFriend})`;
+          showToast(`Friend ${randomFriend} contributed their split share!`, 'success');
+
+          if (res.isCompleted) {
+            document.getElementById('btn-split-complete').style.display = 'block';
+            showToast("All group members have contributed! You may now proceed to Snacks.", 'success');
+          }
+        }
+      } catch(err) {
+        console.error(err);
+      }
+    }
+
+    function proceedToSnacks() {
+      if (selectedSeats.length === 0) {
+        showToast("Please select at least 1 seat to continue.", "warning");
+        return;
+      }
+
+      CinemaStore.setCurrentSelection({
+        movieId: currentMovieId,
+        movieTitle: movieData.title,
+        showTime: currentShowTime,
+        isBlindBox: movieData.isBlindBox,
+        selectedSeats: selectedSeats,
+        vibePreference: currentVibePreference,
+        totalTicketPrice: selectedSeats.reduce((sum, s) => sum + s.price, 0),
+        splitCode: null
+      });
+
+      window.location.href = 'snacks.html';
+    }
+
+    function proceedToSnacksWithSplit() {
+      CinemaStore.setCurrentSelection({
+        movieId: currentMovieId,
+        movieTitle: movieData.title,
+        showTime: currentShowTime,
+        isBlindBox: movieData.isBlindBox,
+        selectedSeats: selectedSeats,
+        vibePreference: currentVibePreference,
+        totalTicketPrice: selectedSeats.reduce((sum, s) => sum + s.price, 0),
+        splitCode: activeSplitSession.splitCode
+      });
+
+      window.location.href = 'snacks.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', initBooking);
+  </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DARK-OPS CINEMA // Next-Gen Movie Ticket Booking</title>
+  <meta name="description" content="Experience cutting-edge cinema booking with 3D POV preview, vibe heatmap seating, group split-pay, and mystery blind box screening specials.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAVIGATION BAR -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">⚡</div>
+        <span class="brand-title">DARK-OPS CINEMA</span>
+        <span class="brand-badge">JAVA v26 CORE</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">🎬 Movies</a></li>
+        <li><a href="booking.html" class="nav-link">💺 Seating POV</a></li>
+        <li><a href="snacks.html" class="nav-link">🍿 Snack Lab</a></li>
+        <li><a href="confirmation.html" class="nav-link">🎟️ Ticket Pass</a></li>
+      </ul>
+
+      <div class="nav-status-pill">
+        <span class="status-dot"></span>
+        <span>GAP-MINIMIZER READY</span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- HERO BANNER -->
+    <section class="hero">
+      <div class="hero-tag">IMAX LASER & ATMOS 3D AUDIO CERTIFIED</div>
+      <h1 class="hero-title">Elevate Your Cinema <span>Experience</span></h1>
+      <p class="hero-subtitle">
+        Algorithmic gap-free seat matching, real-time theater vibe heatmaps, live 3D screen POV simulation, and high-stakes Blind Box mystery pre-screenings.
+      </p>
+
+      <div class="hero-stats">
+        <div class="hero-stat-item">
+          <h4>70mm</h4>
+          <p>Dual Laser 4K Projection</p>
+        </div>
+        <div class="hero-stat-item">
+          <h4>10-Min</h4>
+          <p>Split-Pay Lock Cache</p>
+        </div>
+        <div class="hero-stat-item">
+          <h4>40% OFF</h4>
+          <p>Mystery Blind Box Discounts</p>
+        </div>
+        <div class="hero-stat-item">
+          <h4>0 Gaps</h4>
+          <p>Java Optimization Engine</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION TITLE & FILTERS -->
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Now Showing & Special Premieres</h2>
+        <p class="section-subtitle">Select your movie, choose your preferred showtime, and proceed to interactive seating.</p>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" data-filter="ALL">All Showings</button>
+      <button class="filter-btn" data-filter="BLIND_BOX">🎁 Mystery Blind Box (40% OFF)</button>
+      <button class="filter-btn" data-filter="IMAX">IMAX 3D Laser</button>
+      <button class="filter-btn" data-filter="SCI_FI">Sci-Fi & Cyberpunk</button>
+      <button class="filter-btn" data-filter="ACTION">Action & Thriller</button>
+    </div>
+
+    <!-- MOVIE CARDS GRID -->
+    <div class="movie-grid" id="movie-grid">
+      <!-- Injected via JavaScript -->
+      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+        <p>Loading blockbuster catalog from Java backend...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    let allMovies = [];
+    let activeFilter = 'ALL';
+    const selectedShowTimes = {};
+
+    async function loadDashboard() {
+      try {
+        allMovies = await API.getMovies();
+        renderMovies();
+      } catch (err) {
+        console.error("Error loading movies:", err);
+        showToast("Error connecting to DarkOps Java Backend. Please ensure server is running.", "warning");
+      }
+    }
+
+    function renderMovies() {
+      const grid = document.getElementById('movie-grid');
+      grid.innerHTML = '';
+
+      const filtered = allMovies.filter(m => {
+        if (activeFilter === 'BLIND_BOX') return m.isBlindBox;
+        if (activeFilter === 'IMAX') return m.tags && m.tags.includes('IMAX');
+        if (activeFilter === 'SCI_FI') return m.genre.includes('Sci-Fi') || m.genre.includes('Cyberpunk');
+        if (activeFilter === 'ACTION') return m.genre.includes('Action');
+        return true;
+      });
+
+      filtered.forEach(movie => {
+        if (!selectedShowTimes[movie.id]) {
+          selectedShowTimes[movie.id] = '18:30';
+        }
+
+        const card = document.createElement('div');
+        card.className = `movie-card ${movie.isBlindBox ? 'blind-box-card' : ''}`;
+        card.id = `card-${movie.id}`;
+
+        if (movie.isBlindBox) {
+          // SPECIAL MYSTERY MOVIE / BLIND BOX CARD
+          card.innerHTML = `
+            <div class="blind-box-badge">🎁 MYSTERY BLIND BOX</div>
+            <div class="blind-box-discount">${movie.blindBoxDiscountPct}% OFF</div>
+
+            <div class="blind-box-visual">
+              <div class="mystery-scan-lines"></div>
+              <div class="mystery-cube">📦</div>
+              <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #a855f7; font-weight: 700; margin-top: 0.5rem; letter-spacing: 0.15em;">
+                SURPRISE BLOCKBUSTER
+              </div>
+            </div>
+
+            <div class="movie-body">
+              <h3 class="movie-title">${movie.title}</h3>
+              <div class="movie-meta">
+                <span>⏱️ ${movie.duration} min</span>
+                <span>⭐ SECRET 9.1</span>
+                <span>🛡️ ${movie.rating}</span>
+              </div>
+
+              <div class="mystery-perks">
+                <span class="perk-tag">⚡ Secret Pre-Screening</span>
+                <span class="perk-tag">🍿 Free Mystery Snack</span>
+                <span class="perk-tag">🎟️ Unlocks At Barcode</span>
+              </div>
+
+              <p class="movie-synopsis">${movie.synopsis}</p>
+
+              <div class="movie-showtimes">
+                <div class="showtimes-label">Select Secret Showing:</div>
+                <div class="showtime-chips">
+                  <button class="time-chip ${selectedShowTimes[movie.id] === '18:30' ? 'selected' : ''}" onclick="selectTime('${movie.id}', '18:30')">18:30 VIP</button>
+                  <button class="time-chip ${selectedShowTimes[movie.id] === '21:15' ? 'selected' : ''}" onclick="selectTime('${movie.id}', '21:15')">21:15 NIGHT</button>
+                </div>
+              </div>
+
+              <div class="movie-footer">
+                <div class="movie-price-wrap">
+                  <span class="price-label">Blind Box Special</span>
+                  <span class="price-val" style="color: #10b981;">$${movie.basePrice.toFixed(2)}</span>
+                </div>
+                <button class="btn btn-purple" onclick="bookMovie('${movie.id}')">
+                  Claim Mystery Pass ⚡
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          // STANDARD BLOCKBUSTER MOVIE CARD
+          card.innerHTML = `
+            <div class="movie-poster-wrap">
+              <img src="${movie.posterUrl}" alt="${movie.title}" class="movie-poster" loading="lazy">
+              <div class="movie-rating-badge">
+                ★ <span>${movie.score.toFixed(1)}</span>
+              </div>
+              <div class="movie-genre-badge">${movie.genre.split('/')[0].trim()}</div>
+            </div>
+
+            <div class="movie-body">
+              <h3 class="movie-title">${movie.title}</h3>
+              <div class="movie-meta">
+                <span>⏱️ ${movie.duration} min</span>
+                <span>🛡️ ${movie.rating}</span>
+              </div>
+
+              <p class="movie-synopsis">${movie.synopsis}</p>
+
+              <div class="movie-showtimes">
+                <div class="showtimes-label">Available Showtimes:</div>
+                <div class="showtime-chips">
+                  <button class="time-chip ${selectedShowTimes[movie.id] === '18:30' ? 'selected' : ''}" onclick="selectTime('${movie.id}', '18:30')">18:30</button>
+                  <button class="time-chip ${selectedShowTimes[movie.id] === '21:15' ? 'selected' : ''}" onclick="selectTime('${movie.id}', '21:15')">21:15</button>
+                </div>
+              </div>
+
+              <div class="movie-footer">
+                <div class="movie-price-wrap">
+                  <span class="price-label">Standard Ticket</span>
+                  <span class="price-val">$${movie.basePrice.toFixed(2)}</span>
+                </div>
+                <button class="btn btn-primary" onclick="bookMovie('${movie.id}')">
+                  Select Seats ➔
+                </button>
+              </div>
+            </div>
+          `;
+        }
+
+        grid.appendChild(card);
+      });
+    }
+
+    function selectTime(movieId, time) {
+      selectedShowTimes[movieId] = time;
+      renderMovies();
+    }
+
+    function bookMovie(movieId) {
+      const movie = allMovies.find(m => m.id === movieId);
+      const time = selectedShowTimes[movieId] || '18:30';
+
+      CinemaStore.setCurrentSelection({
+        movieId: movie.id,
+        movieTitle: movie.title,
+        showTime: time,
+        isBlindBox: movie.isBlindBox,
+        basePrice: movie.basePrice,
+        selectedSeats: [],
+        vibePreference: 'NONE'
+      });
+
+      window.location.href = `booking.html?movie=${encodeURIComponent(movieId)}&time=${encodeURIComponent(time)}`;
+    }
+
+    // Filter bar listener
+    document.getElementById('filter-bar').addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-btn')) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        activeFilter = e.target.dataset.filter;
+        renderMovies();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>
