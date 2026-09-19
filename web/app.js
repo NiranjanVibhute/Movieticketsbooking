@@ -1,14 +1,20 @@
 // Dynamic Backend URL resolver:
-// - Direct Render/Localhost: uses relative path "" to call backend on the same origin.
-// - Separate Vercel frontend: uses configured window.API_BACKEND_URL or localStorage, or defaults to current origin.
+// - Direct Render/Localhost: uses relative path "" (same-origin).
+// - Vercel / External hosts: automatically routes to https://movieticketsbooking.onrender.com
 const BACKEND_URL = (() => {
   if (typeof window !== 'undefined') {
     if (window.API_BACKEND_URL) return window.API_BACKEND_URL;
     const stored = localStorage.getItem('BACKEND_URL');
     if (stored) return stored;
-    return "";
+
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('onrender.com')) {
+      return "";
+    }
+    // Default backend URL for Vercel deployment
+    return "https://movieticketsbooking.onrender.com";
   }
-  return "";
+  return "https://movieticketsbooking.onrender.com";
 })();
 
 const API = {
