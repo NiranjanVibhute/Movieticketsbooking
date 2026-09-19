@@ -1,30 +1,30 @@
-/**
- * DARK-OPS CINEMA SHARED FRONTEND SCRIPT & API CLIENT
- */
+// Global Configuration for Distributed Cloud Architecture
+// Replace this placeholder link with your exact Render URL copied from your dashboard header
+const BACKEND_URL = "https://onrender.com";
 
 const API = {
   getMovies: async () => {
-    const res = await fetch('/api/movies');
+    const res = await fetch(`${BACKEND_URL}/api/movies`);
     return await res.json();
   },
 
   getMovie: async (id) => {
-    const res = await fetch(`/api/movies/${id}`);
+    const res = await fetch(`${BACKEND_URL}/api/movies/${id}`);
     return await res.json();
   },
 
   getSeats: async (movieId, showTime) => {
-    const res = await fetch(`/api/seats?movieId=${encodeURIComponent(movieId)}&showTime=${encodeURIComponent(showTime)}`);
+    const res = await fetch(`${BACKEND_URL}/api/seats?movieId=${encodeURIComponent(movieId)}&showTime=${encodeURIComponent(showTime)}`);
     return await res.json();
   },
 
   getVibeHeatmap: async (movieId, showTime) => {
-    const res = await fetch(`/api/seats/heatmap?movieId=${encodeURIComponent(movieId)}&showTime=${encodeURIComponent(showTime)}`);
+    const res = await fetch(`${BACKEND_URL}/api/seats/heatmap?movieId=${encodeURIComponent(movieId)}&showTime=${encodeURIComponent(showTime)}`);
     return await res.json();
   },
 
   optimizeSeats: async (payload) => {
-    const res = await fetch('/api/seats/optimize', {
+    const res = await fetch(`${BACKEND_URL}/api/seats/optimize`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -33,7 +33,7 @@ const API = {
   },
 
   lockSeats: async (seatIds, durationMinutes = 10) => {
-    const res = await fetch('/api/seats/lock', {
+    const res = await fetch(`${BACKEND_URL}/api/seats/lock`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ seatIds, durationMinutes })
@@ -42,7 +42,7 @@ const API = {
   },
 
   createSplitPay: async (payload) => {
-    const res = await fetch('/api/split-pay/create', {
+    const res = await fetch(`${BACKEND_URL}/api/split-pay/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -51,12 +51,13 @@ const API = {
   },
 
   getSplitStatus: async (code) => {
-    const res = await fetch(`/api/split-pay/status?code=${encodeURIComponent(code)}`);
+    const res = await fetch(`\({ BACKEND_URL } / api / split - pay / status ? code =\){ encodeURIComponent(code)
+  }`);
     return await res.json();
   },
 
   contributeSplitPay: async (code, participantName) => {
-    const res = await fetch('/api/split-pay/pay', {
+    const res = await fetch(`\${ BACKEND_URL }/api/split - pay / pay`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, participantName })
@@ -65,12 +66,12 @@ const API = {
   },
 
   getSnacks: async () => {
-    const res = await fetch('/api/snacks');
+    const res = await fetch(`\${ BACKEND_URL } /api/snacks`);
     return await res.json();
   },
 
   calculateSnack: async (baseType, addOns) => {
-    const res = await fetch('/api/snacks/calculate', {
+    const res = await fetch(`\${ BACKEND_URL } /api/snacks / calculate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ baseType, addOns })
@@ -79,18 +80,18 @@ const API = {
   },
 
   checkout: async (payload) => {
-    const res = await fetch('/api/bookings/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    const res = await fetch(`\${ BACKEND_URL } /api/bookings / checkout', {
+method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(payload)
     });
-    return await res.json();
+return await res.json();
   },
 
-  getBooking: async (bookingRef) => {
-    const res = await fetch(`/api/bookings/${encodeURIComponent(bookingRef)}`);
-    return await res.json();
-  }
+getBooking: async (bookingRef) => {
+  const res = await fetch(`${BACKEND_URL}/api/bookings/${encodeURIComponent(bookingRef)}`);
+  return await res.json();
+}
 };
 
 // UI Toast Notification Utility
@@ -107,7 +108,7 @@ function showToast(message, type = 'info') {
   toast.className = 'toast';
   const icon = type === 'success' ? '⚡' : type === 'warning' ? '⚠️' : 'ℹ️';
   toast.innerHTML = `<span style="font-size:1.2rem;">${icon}</span><span>${message}</span>`;
-  
+
   container.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = '0';
@@ -123,7 +124,7 @@ const CinemaStore = {
     try {
       const data = sessionStorage.getItem('darkops_current_booking');
       return data ? JSON.parse(data) : null;
-    } catch(e) { return null; }
+    } catch (e) { return null; }
   },
 
   setCurrentSelection: (obj) => {
@@ -134,7 +135,7 @@ const CinemaStore = {
     try {
       const data = sessionStorage.getItem('darkops_snack_order');
       return data ? JSON.parse(data) : [];
-    } catch(e) { return []; }
+    } catch (e) { return []; }
   },
 
   setSnackOrder: (snacks) => {
@@ -145,7 +146,7 @@ const CinemaStore = {
     try {
       const data = sessionStorage.getItem('darkops_last_booking');
       return data ? JSON.parse(data) : null;
-    } catch(e) { return null; }
+    } catch (e) { return null; }
   },
 
   setLastBooking: (booking) => {
@@ -169,6 +170,6 @@ function generateBarcodeSVG(codeText) {
   return `<svg class="barcode-svg" viewBox="0 0 ${x + 20} 60" xmlns="http://www.w3.org/2000/svg">
     <rect width="100%" height="100%" fill="#ffffff"/>
     ${bars.join('')}
-    <text x="${(x+20)/2}" y="58" font-family="monospace" font-size="9" text-anchor="middle" fill="#000">${codeText}</text>
+    <text x="${(x + 20) / 2}" y="58" font-family="monospace" font-size="9" text-anchor="middle" fill="#000">${codeText}</text>
   </svg>`;
 }
