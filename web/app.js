@@ -42,7 +42,7 @@ const API = {
   },
 
   createSplitPay: async (payload) => {
-    const res = await fetch(`${BACKEND_URL}/api/split-pay/create', {
+    const res = await fetch(`${BACKEND_URL}/api/split-pay/create`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -89,7 +89,7 @@ return await res.json();
   },
 
 getBooking: async (bookingRef) => {
-  const res = await fetch(`${BACKEND_URL}/api/bookings/${encodeURIComponent(bookingRef)}`);
+  const res = await fetch(`${ BACKEND_URL } / api / bookings / ${ encodeURIComponent(bookingRef) }`);
   return await res.json();
 }
 };
@@ -107,7 +107,7 @@ function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = 'toast';
   const icon = type === 'success' ? '⚡' : type === 'warning' ? '⚠️' : 'ℹ️';
-  toast.innerHTML = `<span style="font-size:1.2rem;">${icon}</span><span>${message}</span>`;
+  toast.innerHTML = `< span style = "font-size:1.2rem;" > ${ icon }</span > <span>${message}</span>`;
 
   container.appendChild(toast);
   setTimeout(() => {
@@ -162,14 +162,14 @@ function generateBarcodeSVG(codeText) {
     const charCode = codeText.charCodeAt(i);
     const w1 = (charCode % 3) + 1;
     const w2 = ((charCode >> 1) % 3) + 1;
-    bars.push(`<rect x="${x}" y="5" width="${w1 * 2}" height="50" fill="#000" />`);
+    bars.push(`< rect x = "${x}" y = "5" width = "${w1 * 2}" height = "50" fill = "#000" /> `);
     x += (w1 * 2) + 2;
-    bars.push(`<rect x="${x}" y="5" width="${w2}" height="50" fill="#000" />`);
+    bars.push(`< rect x = "${x}" y = "5" width = "${w2}" height = "50" fill = "#000" /> `);
     x += w2 + 3;
   }
-  return `<svg class="barcode-svg" viewBox="0 0 ${x + 20} 60" xmlns="http://www.w3.org/2000/svg">
-    <rect width="100%" height="100%" fill="#ffffff"/>
-    ${bars.join('')}
-    <text x="${(x + 20) / 2}" y="58" font-family="monospace" font-size="9" text-anchor="middle" fill="#000">${codeText}</text>
-  </svg>`;
+  return `< svg class= "barcode-svg" viewBox = "0 0 ${x + 20} 60" xmlns = "http://www.w3.org/2000/svg" >
+    <rect width="100%" height="100%" fill="#ffffff" />
+    ${ bars.join('') }
+    < text x = "${(x + 20) / 2}" y = "58" font - family="monospace" font - size="9" text - anchor="middle" fill = "#000" > ${ codeText }</text >
+  </svg > `;
 }
