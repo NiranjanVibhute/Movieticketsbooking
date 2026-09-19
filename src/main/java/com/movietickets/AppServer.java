@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.Executors;
 
 public class AppServer {
-    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 8081;
 
     public static void main(String[] args) {
         try {

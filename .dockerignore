@@ -1,0 +1,10 @@
+.git
+.gitignore
+.idea
+*.log
+bin/
+target/
+lib/
+movietickets.db
+*.ps1
+*.bat

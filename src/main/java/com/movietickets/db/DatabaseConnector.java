@@ -61,17 +61,21 @@ public class DatabaseConnector {
     }
 
     private void createTablesDirectly(Statement stmt) throws SQLException {
-        stmt.execute("CREATE TABLE IF NOT EXISTS movies (id TEXT PRIMARY KEY, title TEXT NOT NULL, genre TEXT NOT NULL, duration INTEGER NOT NULL, rating TEXT NOT NULL, score REAL NOT NULL, poster_url TEXT NOT NULL, backdrop_url TEXT NOT NULL, synopsis TEXT NOT NULL, base_price REAL NOT NULL, is_blind_box INTEGER DEFAULT 0, blind_box_reveal_title TEXT, blind_box_discount_pct INTEGER DEFAULT 0, tags TEXT);");
-        stmt.execute("CREATE TABLE IF NOT EXISTS seats (id TEXT PRIMARY KEY, movie_id TEXT NOT NULL, show_time TEXT NOT NULL, row_letter TEXT NOT NULL, seat_number INTEGER NOT NULL, tier TEXT NOT NULL, price REAL NOT NULL, is_booked INTEGER DEFAULT 0, vibe_tag TEXT DEFAULT 'NONE', FOREIGN KEY(movie_id) REFERENCES movies(id));");
-        stmt.execute("CREATE TABLE IF NOT EXISTS bookings (id TEXT PRIMARY KEY, booking_ref TEXT UNIQUE NOT NULL, movie_id TEXT NOT NULL, show_time TEXT NOT NULL, seat_numbers TEXT NOT NULL, vibe_preference TEXT DEFAULT 'NONE', total_amount REAL NOT NULL, split_status TEXT DEFAULT 'NONE', split_code TEXT, customer_name TEXT NOT NULL, customer_email TEXT NOT NULL, snacks_json TEXT, booking_time DATETIME DEFAULT CURRENT_TIMESTAMP, delivery_status TEXT DEFAULT 'CONFIRMED', FOREIGN KEY(movie_id) REFERENCES movies(id));");
-        stmt.execute("CREATE TABLE IF NOT EXISTS snacks (id TEXT PRIMARY KEY, name TEXT NOT NULL, category TEXT NOT NULL, base_price REAL NOT NULL, base_calories INTEGER NOT NULL, description TEXT, image_url TEXT);");
+        stmt.execute(
+                "CREATE TABLE IF NOT EXISTS movies (id TEXT PRIMARY KEY, title TEXT NOT NULL, genre TEXT NOT NULL, duration INTEGER NOT NULL, rating TEXT NOT NULL, score REAL NOT NULL, poster_url TEXT NOT NULL, backdrop_url TEXT NOT NULL, synopsis TEXT NOT NULL, base_price REAL NOT NULL, is_blind_box INTEGER DEFAULT 0, blind_box_reveal_title TEXT, blind_box_discount_pct INTEGER DEFAULT 0, tags TEXT);");
+        stmt.execute(
+                "CREATE TABLE IF NOT EXISTS seats (id TEXT PRIMARY KEY, movie_id TEXT NOT NULL, show_time TEXT NOT NULL, row_letter TEXT NOT NULL, seat_number INTEGER NOT NULL, tier TEXT NOT NULL, price REAL NOT NULL, is_booked INTEGER DEFAULT 0, vibe_tag TEXT DEFAULT 'NONE', FOREIGN KEY(movie_id) REFERENCES movies(id));");
+        stmt.execute(
+                "CREATE TABLE IF NOT EXISTS bookings (id TEXT PRIMARY KEY, booking_ref TEXT UNIQUE NOT NULL, movie_id TEXT NOT NULL, show_time TEXT NOT NULL, seat_numbers TEXT NOT NULL, vibe_preference TEXT DEFAULT 'NONE', total_amount REAL NOT NULL, split_status TEXT DEFAULT 'NONE', split_code TEXT, customer_name TEXT NOT NULL, customer_email TEXT NOT NULL, snacks_json TEXT, booking_time DATETIME DEFAULT CURRENT_TIMESTAMP, delivery_status TEXT DEFAULT 'CONFIRMED', FOREIGN KEY(movie_id) REFERENCES movies(id));");
+        stmt.execute(
+                "CREATE TABLE IF NOT EXISTS snacks (id TEXT PRIMARY KEY, name TEXT NOT NULL, category TEXT NOT NULL, base_price REAL NOT NULL, base_calories INTEGER NOT NULL, description TEXT, image_url TEXT);");
     }
 
     private void seedInitialData(Connection conn) {
         try {
             // Check if movies exist
             try (Statement checkStmt = conn.createStatement();
-                 ResultSet rs = checkStmt.executeQuery("SELECT COUNT(*) FROM movies")) {
+                    ResultSet rs = checkStmt.executeQuery("SELECT COUNT(*) FROM movies")) {
                 if (rs.next() && rs.getInt(1) > 0) {
                     return; // Already seeded
                 }
@@ -89,9 +93,12 @@ public class DatabaseConnector {
                 ps.setInt(4, 166);
                 ps.setString(5, "PG-13");
                 ps.setDouble(6, 8.9);
-                ps.setString(7, "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80");
-                ps.setString(8, "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1200&auto=format&fit=crop&q=80");
-                ps.setString(9, "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family in a desert planetary war.");
+                ps.setString(7,
+                        "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80");
+                ps.setString(8,
+                        "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1200&auto=format&fit=crop&q=80");
+                ps.setString(9,
+                        "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family in a desert planetary war.");
                 ps.setDouble(10, 18.50);
                 ps.setInt(11, 0);
                 ps.setString(12, null);
@@ -106,9 +113,12 @@ public class DatabaseConnector {
                 ps.setInt(4, 142);
                 ps.setString(5, "R");
                 ps.setDouble(6, 8.6);
-                ps.setString(7, "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80");
-                ps.setString(8, "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&auto=format&fit=crop&q=80");
-                ps.setString(9, "In a rain-slicked mega-city ruled by rogue AI syndicates, a black-market netrunner discovers a quantum cipher that could reboot civilization.");
+                ps.setString(7,
+                        "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80");
+                ps.setString(8,
+                        "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&auto=format&fit=crop&q=80");
+                ps.setString(9,
+                        "In a rain-slicked mega-city ruled by rogue AI syndicates, a black-market netrunner discovers a quantum cipher that could reboot civilization.");
                 ps.setDouble(10, 16.00);
                 ps.setInt(11, 0);
                 ps.setString(12, null);
@@ -123,9 +133,12 @@ public class DatabaseConnector {
                 ps.setInt(4, 169);
                 ps.setString(5, "PG-13");
                 ps.setDouble(6, 8.7);
-                ps.setString(7, "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80");
-                ps.setString(8, "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=1200&auto=format&fit=crop&q=80");
-                ps.setString(9, "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans.");
+                ps.setString(7,
+                        "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80");
+                ps.setString(8,
+                        "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=1200&auto=format&fit=crop&q=80");
+                ps.setString(9,
+                        "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans.");
                 ps.setDouble(10, 15.00);
                 ps.setInt(11, 0);
                 ps.setString(12, null);
@@ -140,9 +153,12 @@ public class DatabaseConnector {
                 ps.setInt(4, 135);
                 ps.setString(5, "R");
                 ps.setDouble(6, 8.4);
-                ps.setString(7, "https://images.unsplash.com/photo-1533558701576-23c65e0272fb?w=600&auto=format&fit=crop&q=80");
-                ps.setString(8, "https://images.unsplash.com/photo-1528164344705-475426879c0d?w=1200&auto=format&fit=crop&q=80");
-                ps.setString(9, "A lone wandering swordmaster defends an ancient mountain fortress against legions of supernatural invaders during feudal warfare.");
+                ps.setString(7,
+                        "https://images.unsplash.com/photo-1533558701576-23c65e0272fb?w=600&auto=format&fit=crop&q=80");
+                ps.setString(8,
+                        "https://images.unsplash.com/photo-1528164344705-475426879c0d?w=1200&auto=format&fit=crop&q=80");
+                ps.setString(9,
+                        "A lone wandering swordmaster defends an ancient mountain fortress against legions of supernatural invaders during feudal warfare.");
                 ps.setDouble(10, 14.50);
                 ps.setInt(11, 0);
                 ps.setString(12, null);
@@ -157,9 +173,12 @@ public class DatabaseConnector {
                 ps.setInt(4, 150);
                 ps.setString(5, "PG-13 / R");
                 ps.setDouble(6, 9.1);
-                ps.setString(7, "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80");
-                ps.setString(8, "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1200&auto=format&fit=crop&q=80");
-                ps.setString(9, "Experience the ultimate cinema thrill! You get an unreleased pre-screening or award-winning masterpiece at a massive 40% discount. The exact movie identity unlocks upon ticket barcode confirmation!");
+                ps.setString(7,
+                        "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80");
+                ps.setString(8,
+                        "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1200&auto=format&fit=crop&q=80");
+                ps.setString(9,
+                        "Experience the ultimate cinema thrill! You get an unreleased pre-screening or award-winning masterpiece at a massive 40% discount. The exact movie identity unlocks upon ticket barcode confirmation!");
                 ps.setDouble(10, 11.99); // Heavily discounted
                 ps.setInt(11, 1); // is_blind_box = 1
                 ps.setString(12, "Oppenheimer (Director's 70mm Secret Cut)");
@@ -183,9 +202,9 @@ public class DatabaseConnector {
     }
 
     private void seedSeats(Connection conn) throws SQLException {
-        String[] movies = {"mov-dune2", "mov-cyberpunk", "mov-interstellar", "mov-samurai", "mov-blindbox"};
-        String[] showTimes = {"18:30", "21:15"};
-        char[] rows = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+        String[] movies = { "mov-dune2", "mov-cyberpunk", "mov-interstellar", "mov-samurai", "mov-blindbox" };
+        String[] showTimes = { "18:30", "21:15" };
+        char[] rows = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
         int seatsPerRow = 10;
 
         String insertSeat = "INSERT INTO seats (id, movie_id, show_time, row_letter, seat_number, tier, price, is_booked, vibe_tag) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -195,12 +214,14 @@ public class DatabaseConnector {
             for (String movie : movies) {
                 for (String time : showTimes) {
                     for (char row : rows) {
-                        String tier = (row == 'A' || row == 'B') ? "VIP" : (row == 'C' || row == 'D' || row == 'E') ? "PREMIUM" : "STANDARD";
-                        double basePrice = movie.equals("mov-blindbox") ? 11.99 : (tier.equals("VIP") ? 22.00 : tier.equals("PREMIUM") ? 17.50 : 13.00);
+                        String tier = (row == 'A' || row == 'B') ? "VIP"
+                                : (row == 'C' || row == 'D' || row == 'E') ? "PREMIUM" : "STANDARD";
+                        double basePrice = movie.equals("mov-blindbox") ? 11.99
+                                : (tier.equals("VIP") ? 22.00 : tier.equals("PREMIUM") ? 17.50 : 13.00);
 
                         for (int s = 1; s <= seatsPerRow; s++) {
                             String seatId = String.format("%s_%s_%c%d", movie, time, row, s);
-                            
+
                             // Deterministic pre-bookings for realism
                             boolean isBooked = false;
                             String vibeTag = "NONE";
@@ -215,7 +236,8 @@ public class DatabaseConnector {
                             }
 
                             // Occasional booked seats
-                            if ((row == 'C' && (s == 2 || s == 7)) || (row == 'D' && (s == 3 || s == 4)) || (row == 'A' && s == 5)) {
+                            if ((row == 'C' && (s == 2 || s == 7)) || (row == 'D' && (s == 3 || s == 4))
+                                    || (row == 'A' && s == 5)) {
                                 isBooked = true;
                             }
 
@@ -247,7 +269,8 @@ public class DatabaseConnector {
             ps.setDouble(4, 7.50);
             ps.setInt(5, 420);
             ps.setString(6, "Warm gourmet butterfly corn tossed in Himalayan pink salt and savory butter.");
-            ps.setString(7, "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400&auto=format&fit=crop&q=80");
+            ps.setString(7,
+                    "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400&auto=format&fit=crop&q=80");
             ps.addBatch();
 
             // Nachos
@@ -257,7 +280,8 @@ public class DatabaseConnector {
             ps.setDouble(4, 9.00);
             ps.setInt(5, 680);
             ps.setString(6, "Crispy artisanal tortilla chips paired with warm queso blanco and jalapeños.");
-            ps.setString(7, "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400&auto=format&fit=crop&q=80");
+            ps.setString(7,
+                    "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400&auto=format&fit=crop&q=80");
             ps.addBatch();
 
             // Soda / Drink
@@ -267,7 +291,8 @@ public class DatabaseConnector {
             ps.setDouble(4, 5.00);
             ps.setInt(5, 180);
             ps.setString(6, "Chilled zero-sugar craft cola or electric blue raspberry frozen slush.");
-            ps.setString(7, "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80");
+            ps.setString(7,
+                    "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80");
             ps.addBatch();
 
             // Hotdog
@@ -277,7 +302,8 @@ public class DatabaseConnector {
             ps.setDouble(4, 8.50);
             ps.setInt(5, 520);
             ps.setString(6, "Flame-grilled all-beef artisan frank in a toasted brioche bun with smoked aioli.");
-            ps.setString(7, "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?w=400&auto=format&fit=crop&q=80");
+            ps.setString(7,
+                    "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?w=400&auto=format&fit=crop&q=80");
             ps.addBatch();
 
             ps.executeBatch();
@@ -286,7 +312,8 @@ public class DatabaseConnector {
 
     private String loadResourceFile(String path) {
         try (InputStream in = getClass().getResourceAsStream(path)) {
-            if (in == null) return null;
+            if (in == null)
+                return null;
             return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             return null;
